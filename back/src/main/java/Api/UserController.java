@@ -2,7 +2,7 @@ package Api;
 
 import Model.User;
 import Persistence.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import Services.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,6 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserController {
 
-    @Autowired
     private final UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
@@ -21,8 +20,9 @@ public class UserController {
     }
 
     @GetMapping
-    public Iterable<User> list(){
-        return this.userRepository.findAll();
+    public ResponseEntity<Iterable<User>> list(){
+
+        return ResponseEntity.status(200).body(userRepository.findAll());
     }
 
     @GetMapping("/{id}")
@@ -32,7 +32,9 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@Validated @RequestBody User user){
-        return userRepository.save(user);
+    public ApiResponse create(@Validated @RequestBody User user){
+        User newUser = userRepository.save(user);
+        Object data = ResponseEntity.ok().body(newUser);
+        return new ApiResponse("User successfully created", data);
     }
 }
