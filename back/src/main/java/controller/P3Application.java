@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = {"Api", "Model", "Persistence", "Services", "Configuration"})
+@SpringBootApplication(scanBasePackages = {"Api", "Model", "Persistence", "Services", "Security"})
 @EnableJpaRepositories("Persistence")
 @EntityScan("Model")
 public class P3Application {
