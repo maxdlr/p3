@@ -14,36 +14,43 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration // set this as an actual config
-@EnableWebSecurity // annotation to activate sec, redefines SB basic filters (declarative programming)
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Autowired
     public SecurityConfig(
-            CustomUserDetailsService userDetailsService,
-            JwtAuthEntryPoint jwtAuthEntryPoint
+            CustomUserDetailsService userDetailsService
     ) {
+        this.jwtAuthEntryPoint = new JwtAuthEntryPoint();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(Customizer.withDefaults())
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(jwtAuthEntryPoint)
+                )
                 .sessionManagement(
                         session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(
                         auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/prune").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/api/users/prune").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
-        ; // todo: jwt
+                .httpBasic(Customizer.withDefaults());
 
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        // JWT filter logic can go here (if needed)
         return http.build();
     }
 
@@ -56,6 +63,11 @@ public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // BCrypt encoder for passwords
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        return new JwtAuthenticationFilter();
     }
 }

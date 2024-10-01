@@ -1,11 +1,13 @@
 package Api;
 
+import Dto.AuthResponseDto;
 import Dto.LoginDto;
 import Dto.RegisterDto;
 import Model.RoleEntity;
 import Model.UserEntity;
 import Persistence.RoleRepository;
 import Persistence.UserRepository;
+import Security.JwtGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,21 +29,24 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private JwtGenerator jwtsGenerator;
 
     public AuthController(
             UserRepository userRepository,
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
-            AuthenticationManager authenticationManager
+            AuthenticationManager authenticationManager,
+            JwtGenerator jwtsGenerator
     ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtsGenerator = jwtsGenerator;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -49,7 +54,8 @@ public class AuthController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new ResponseEntity<>("Successfully logged in", HttpStatus.OK);
+        String token = jwtsGenerator.generateToken(authentication);
+        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
 
     @PostMapping("/register")
