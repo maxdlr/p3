@@ -9,6 +9,7 @@ import Persistence.RoleRepository;
 import Persistence.UserRepository;
 import Security.JwtGenerator;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private JwtGenerator jwtsGenerator;
+    private final JwtGenerator jwtGenerator;
 
     public AuthController(
             UserRepository userRepository,
@@ -42,10 +43,10 @@ public class AuthController {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.jwtsGenerator = jwtsGenerator;
+        this.jwtGenerator = jwtsGenerator;
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -54,7 +55,8 @@ public class AuthController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtsGenerator.generateToken(authentication);
+        String token = jwtGenerator.generateToken(authentication);
+        System.out.println("Registered user: " + loginDto.getEmail() + " with password: " + loginDto.getPassword());
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
 

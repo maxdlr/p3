@@ -25,27 +25,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = getJwtFromRequest(request);
-        if (StringUtils.hasText(token) && generator.validateToken(token)) {
-            String username = generator.getUsernameFromToken(token);
+        String path = request.getRequestURI();
 
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-            authentication.setDetails(new WebAuthenticationDetailsSource());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (path.startsWith("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        String token = getJwtFromRequest(request);
+        if (StringUtils.hasText(token)) {
+            try {
+                if (generator.validateToken(token)) {
+                    String username = generator.getUsernameFromToken(token);
+
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception ex) {
+                System.out.println("Invalid Token: " + ex.getMessage());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or Expired Token");
+                return;
+            }
+        }
+
         filterChain.doFilter(request, response);
     }
+
 
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            String token = bearerToken.substring(7);
+            System.out.println("Extracted Token: " + token);
+            return token;
         }
+        System.out.println("Authorization header is missing or doesn't start with Bearer");
         return null;
     }
 }

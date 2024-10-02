@@ -3,15 +3,19 @@ package Security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtGenerator {
+
+    private final SecretKey secretKey = SecurityConstants.JWT_SECRET;
+
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
         Date currentDate = new Date();
@@ -19,15 +23,16 @@ public class JwtGenerator {
 
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date())
+                .setIssuedAt(currentDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.ES512, SecurityConstants.JWT_SECRET)
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SecurityConstants.JWT_SECRET)
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
@@ -35,10 +40,17 @@ public class JwtGenerator {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token);
+            if (token == null || token.split("\\.").length != 3) {
+                throw new BadCredentialsException("Token format is incorrect, missing parts");
+            }
+
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (SignatureException e) {
-            throw new BadCredentialsException("Invalid JWT signature");
+        } catch (Exception e) {
+            throw new BadCredentialsException("Invalid JWT token: " + e.getMessage(), e);
         }
     }
 }

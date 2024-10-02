@@ -21,22 +21,25 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
     public SecurityConfig(
-            CustomUserDetailsService userDetailsService
+            CustomUserDetailsService userDetailsService,
+            JwtAuthEntryPoint jwtAuthEntryPoint
     ) {
-        this.jwtAuthEntryPoint = new JwtAuthEntryPoint();
+        this.jwtAuthEntryPoint = jwtAuthEntryPoint;
+    }
+
+    @Autowired
+    public void setJwtAuthenticationFilter(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(
-                        exceptionHandling -> exceptionHandling
-                                .authenticationEntryPoint(jwtAuthEntryPoint)
-                )
                 .sessionManagement(
                         session -> session
                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -47,10 +50,14 @@ public class SecurityConfig {
                                 .requestMatchers("/api/users/prune").permitAll()
                                 .anyRequest().authenticated()
                 )
+                .exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(jwtAuthEntryPoint)
+                )
                 .httpBasic(Customizer.withDefaults());
 
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        // JWT filter logic can go here (if needed)
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -63,11 +70,6 @@ public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // BCrypt encoder for passwords
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        return new JwtAuthenticationFilter();
+        return new BCryptPasswordEncoder();
     }
 }
