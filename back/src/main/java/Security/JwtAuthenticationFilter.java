@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             System.out.println("Extracted Token: " + token);
             return token;
         }
-        System.out.println("Authorization header is missing or doesn't start with Bearer");
+        System.out.println("Authorization header is missing or doesn't start with 'Bearer'");
         return null;
     }
 }

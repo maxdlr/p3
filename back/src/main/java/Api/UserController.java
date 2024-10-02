@@ -22,7 +22,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Iterable<UserEntity>> list(){
-
         return ResponseEntity.status(200).body(userRepository.findAll());
     }
 
