@@ -7,8 +7,9 @@ import Model.RoleEntity;
 import Model.UserEntity;
 import Persistence.RoleRepository;
 import Persistence.UserRepository;
+import Security.JwtAuthenticationFilter;
 import Security.JwtGenerator;
-import org.apache.catalina.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +30,21 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public AuthController(
             UserRepository userRepository,
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
             AuthenticationManager authenticationManager,
-            JwtGenerator jwtsGenerator
-    ) {
+            JwtGenerator jwtGenerator,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.jwtGenerator = jwtsGenerator;
+        this.jwtGenerator = jwtGenerator;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,10 +80,9 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserEntity> me() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object token = authentication.getCredentials();
-        System.out.println("me:" + token); //todo: jwtGenerator.getUsernameFromToken() and return User
-        return new ResponseEntity<>(new UserEntity(), HttpStatus.OK);
+    public ResponseEntity<UserEntity> me(HttpServletRequest request) {
+        String token = jwtAuthenticationFilter.getJwtFromRequest(request);
+        String email = jwtGenerator.getEmailFromToken(token);
+        return new ResponseEntity<>(userRepository.findByEmail(email).get(), HttpStatus.OK);
     }
 }
