@@ -2,7 +2,6 @@ package Api;
 
 import Model.UserEntity;
 import Persistence.UserRepository;
-import Services.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -32,10 +31,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ApiResponse create(@Validated @RequestBody UserEntity user){
+    public ResponseEntity<UserEntity> create(@Validated @RequestBody UserEntity user){
         UserEntity newUser = userRepository.save(user);
-        Object data = ResponseEntity.ok().body(newUser);
-        return new ApiResponse("User successfully created", data);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     //todo: remove
