@@ -1,16 +1,25 @@
 package Model;
 
 import jakarta.persistence.*;
-import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Date;
 
 @Entity
-@Table(name = "rental")
+@Table(name = "RENTALS")
 public class RentalEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;
+
+    private float surface;
+
+    private float price;
+
+    private Date created_at;
+
+    private Date updated_at;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity owner;
@@ -19,12 +28,12 @@ public class RentalEntity {
 
     private String description;
 
-    public int getId() {
-        return id;
+    public RentalEntity() {
+        this.created_at = new Date();
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -57,5 +66,34 @@ public class RentalEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public float getSurface() {
+        return surface;
+    }
+
+    public void setSurface(float surface) {
+        this.surface = surface;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public Date getCreatedAt() {
+        return created_at;
+    }
+
+    public Date getUpdatedAt() {
+        return updated_at;
+    }
+
+    public RentalEntity setUpdatedAt(Date updated_at) {
+        this.updated_at = updated_at;
+        return this;
     }
 }

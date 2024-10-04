@@ -24,6 +24,7 @@ export class RentalsService {
   }
 
   public create(form: FormData): Observable<RentalResponse> {
+    console.log(form)
     return this.httpClient.post<RentalResponse>(this.pathService, form);
   }
 
