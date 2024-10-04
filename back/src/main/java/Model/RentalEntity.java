@@ -17,19 +17,20 @@ public class RentalEntity {
 
     private float price;
 
-    private Date created_at;
+    private Date createdAt;
 
-    private Date updated_at;
+    private Date updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity owner;
 
     private String picture;
 
+    @Column(length = 2000)
     private String description;
 
     public RentalEntity() {
-        this.created_at = new Date();
+        this.createdAt = new Date();
     }
 
     public int getId() {
@@ -40,60 +41,66 @@ public class RentalEntity {
         return name;
     }
 
-    public void setName(String name) {
+    public RentalEntity setName(String name) {
         this.name = name;
+        return this;
     }
 
     public UserEntity getOwner() {
         return owner;
     }
 
-    public void setOwner(UserEntity owner) {
+    public RentalEntity setOwner(UserEntity owner) {
         this.owner = owner;
+        return this;
     }
 
     public String getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public RentalEntity setPicture(String picture) {
         this.picture = picture;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public RentalEntity setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public float getSurface() {
         return surface;
     }
 
-    public void setSurface(float surface) {
+    public RentalEntity setSurface(float surface) {
         this.surface = surface;
+        return this;
     }
 
     public float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public RentalEntity setPrice(float price) {
         this.price = price;
+        return this;
     }
 
     public Date getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public Date getUpdatedAt() {
-        return updated_at;
+        return updatedAt;
     }
 
-    public RentalEntity setUpdatedAt(Date updated_at) {
-        this.updated_at = updated_at;
+    public RentalEntity setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
         return this;
     }
 }

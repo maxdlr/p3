@@ -19,11 +19,11 @@ public class MessageEntity {
 
     private long message;
 
-    private Date created_at;
-    private Date updated_at;
+    private Date createdAt;
+    private Date updatedAt;
 
     public MessageEntity() {
-        this.created_at = new Date();
+        this.createdAt = new Date();
     }
 
     public int getId() {
@@ -55,14 +55,14 @@ public class MessageEntity {
     }
 
     public Date getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public Date getUpdatedAt() {
-        return updated_at;
+        return updatedAt;
     }
 
-    public void setUpdatedAt(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

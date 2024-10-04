@@ -66,7 +66,7 @@ export class FormComponent implements OnInit {
   private initForm(rental?: Rental): void {
     console.log(rental);
     console.log(this.sessionService.user!.id);
-    if( (rental !== undefined) && (rental?.owner_id !== this.sessionService.user!.id)) {
+    if( (rental !== undefined) && (rental?.ownerId !== this.sessionService.user!.id)) {
       this.router.navigate(['/rentals']);
     }
     this.rentalForm = this.fb.group({
@@ -81,6 +81,7 @@ export class FormComponent implements OnInit {
   }
 
   private exitPage(rentalResponse: RentalResponse): void {
+    console.log("exiting...")
     this.matSnackBar.open(rentalResponse.message, "Close", { duration: 3000 });
     this.router.navigate(['rentals']);
   }

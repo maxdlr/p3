@@ -3,7 +3,7 @@ CREATE TABLE if not exists `USERS` (
   `email` varchar(255),
   `name` varchar(255),
   `password` varchar(255),
-  `created_at` timestamp,
+  `createdAt` timestamp,
   `updated_at` timestamp
 );
 
@@ -15,7 +15,7 @@ CREATE TABLE if not exists `RENTALS` (
   `picture` varchar(255),
   `description` varchar(2000),
   `owner_id` integer NOT NULL,
-  `created_at` timestamp,
+  `createdAt` timestamp,
   `updated_at` timestamp
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE if not exists `MESSAGES` (
   `rental_id` integer,
   `user_id` integer,
   `message` varchar(2000),
-  `created_at` timestamp,
+  `createdAt` timestamp,
   `updated_at` timestamp
 );
 

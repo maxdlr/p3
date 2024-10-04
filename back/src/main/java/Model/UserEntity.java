@@ -15,8 +15,8 @@ public class UserEntity {
     private String email;
     private String name;
     private String password;
-    private Date created_at;
-    private Date updated_at;
+    private Date createdAt;
+    private Date updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
@@ -32,19 +32,19 @@ public class UserEntity {
     private List<RoleEntity> roles = new ArrayList<>();
 
     public UserEntity() {
-        this.created_at = new Date();
+        this.createdAt = new Date();
     }
 
     public Date getCreatedAt() {
-        return created_at;
+        return createdAt;
     }
 
     public Date getUpdatedAt() {
-        return updated_at;
+        return updatedAt;
     }
 
-    public void setUpdatedAt(Date updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public long getId() {
