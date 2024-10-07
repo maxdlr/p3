@@ -1,6 +1,7 @@
 package Model;
 
 import jakarta.persistence.*;
+import org.aspectj.bridge.Message;
 
 import java.util.Date;
 
@@ -11,13 +12,13 @@ public class MessageEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private RentalEntity rental;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private UserEntity user;
 
-    private long message;
+    private String message;
 
     private Date createdAt;
     private Date updatedAt;
@@ -34,24 +35,27 @@ public class MessageEntity {
         return rental;
     }
 
-    public void setRental(RentalEntity rental) {
+    public MessageEntity setRental(RentalEntity rental) {
         this.rental = rental;
+        return this;
     }
 
     public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user) {
+    public MessageEntity setUser(UserEntity user) {
         this.user = user;
+        return this;
     }
 
-    public long getMessage() {
+    public String getMessage() {
         return message;
     }
 
-    public void setMessage(long message) {
+    public MessageEntity setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public Date getCreatedAt() {
@@ -62,7 +66,8 @@ public class MessageEntity {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public MessageEntity setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
     }
 }
