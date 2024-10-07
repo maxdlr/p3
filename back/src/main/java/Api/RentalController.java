@@ -15,8 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -41,7 +40,8 @@ public class RentalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<RentalEntity> getRentalById(@PathVariable("id") int id){
-        return new ResponseEntity<>(rentalRepository.findById(id).get(), HttpStatus.OK);
+        Optional<RentalEntity> rental = rentalRepository.findById(id);
+        return rental.map(rentalEntity -> new ResponseEntity<>(rentalEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,9 +52,8 @@ public class RentalController {
             @RequestParam("price") float price,
             @RequestParam("picture") MultipartFile picture,
             @RequestParam("description") String description
-            ) throws IOException {
-
-        String fileName = picture.getOriginalFilename();
+    ) throws IOException {
+         String fileName = picture.getOriginalFilename();
          Path filePath = Paths.get(this.assetsPath, fileName);
          Files.write(filePath, picture.getBytes());
 
