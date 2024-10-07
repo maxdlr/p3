@@ -1,6 +1,7 @@
 package Api;
 
 import Model.RentalEntity;
+import Model.UserEntity;
 import Persistence.RentalRepository;
 import Persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +21,11 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/rentals")
 public class RentalController {
-    @Value("${assets.path}")
+    @Value("${assets.savePath}")
     private String assetsPath;
+
+    @Value("${assets.getPath}")
+    private String getPath;
 
     private final RentalRepository rentalRepository;
     private final UserRepository userRepository;
@@ -53,26 +57,49 @@ public class RentalController {
             @RequestParam("picture") MultipartFile picture,
             @RequestParam("description") String description
     ) throws IOException {
-         String fileName = picture.getOriginalFilename();
-         Path filePath = Paths.get(this.assetsPath, fileName);
-         Files.write(filePath, picture.getBytes());
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("surface", surface);
+        params.put("price", price);
+        params.put("picture", picture != null && !picture.isEmpty() ? picture : null);
+        params.put("description", description);
 
-         RentalEntity newRental = new RentalEntity();
+        List<String> missingParams = new ArrayList<>();
 
-        newRental
-            .setPicture(this.assetsPath + fileName)
-            .setName(name)
-            .setDescription(description)
-            .setOwner(userRepository.findByEmail(principal.getName()).get())
-            .setPrice(price)
-            .setSurface(surface);
-        rentalRepository.save(newRental);
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (entry.getValue() == null || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty())) {
+                missingParams.add(entry.getKey());
+            }
+        }
+
+        if (!missingParams.isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Missing or invalid parameters: " + String.join(", ", missingParams));
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<UserEntity> user = userRepository.findByEmail(principal.getName());
+
+        if (picture != null && user.isPresent()) {
+            String fileName = picture.getOriginalFilename();
+            Path filePath = Paths.get(this.assetsPath, fileName);
+            Files.write(filePath, picture.getBytes());
+
+            RentalEntity newRental = new RentalEntity();
+
+            newRental
+                    .setPicture(this.getPath + fileName)
+                    .setName(name)
+                    .setDescription(description)
+                    .setOwner(user.get())
+                    .setPrice(price)
+                    .setSurface(surface);
+            rentalRepository.save(newRental);
+        }
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Rental successfully created");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 }
