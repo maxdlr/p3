@@ -45,3 +45,4 @@ secrets.yml
 .git-hooks/
 node_modules
 front/node_modules
+shared/assets/**

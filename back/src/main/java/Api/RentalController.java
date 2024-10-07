@@ -1,10 +1,13 @@
 package Api;
 
 import Model.RentalEntity;
+import Model.UserEntity;
 import Persistence.RentalRepository;
+import Persistence.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,48 +15,91 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/rentals")
 public class RentalController {
+    @Value("${assets.savePath}")
+    private String assetsPath;
+
+    @Value("${assets.getPath}")
+    private String getPath;
 
     private final RentalRepository rentalRepository;
+    private final UserRepository userRepository;
 
-    public RentalController(RentalRepository rentalRepository) {
+    public RentalController(RentalRepository rentalRepository, UserRepository userRepository) {
         this.rentalRepository = rentalRepository;
+        this.userRepository = userRepository;
     }
-
 
     @GetMapping
-    public String rentals() {
-        return "Rentals";
+    public ResponseEntity<HashMap<String, Iterable<RentalEntity>>> list(){
+        HashMap<String, Iterable<RentalEntity>> response = new HashMap<>();
+        response.put("rentals", rentalRepository.findAll());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(consumes = "multipart/form-data", produces = "application/json")
-    public ResponseEntity<String> create(
-            @Validated @RequestBody RentalEntity rentalEntity,
-            @RequestParam("file") MultipartFile file
+    @GetMapping("/{id}")
+    public ResponseEntity<RentalEntity> getRentalById(@PathVariable("id") int id){
+        Optional<RentalEntity> rental = rentalRepository.findById(id);
+        return rental.map(rentalEntity -> new ResponseEntity<>(rentalEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> create(
+            final Principal principal,
+            @RequestParam("name") String name,
+            @RequestParam("surface") float surface,
+            @RequestParam("price") float price,
+            @RequestParam("picture") MultipartFile picture,
+            @RequestParam("description") String description
     ) throws IOException {
-        // Save the file to a directory
-        String fileName = file.getOriginalFilename();
-        // Save the file to the filesystem or cloud storage
-        // For example:
-         Path filePath = Paths.get("path/to/your/directory", fileName);
-         Files.write(filePath, file.getBytes());
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("surface", surface);
+        params.put("price", price);
+        params.put("picture", picture != null && !picture.isEmpty() ? picture : null);
+        params.put("description", description);
 
-         RentalEntity newRental = new RentalEntity();
+        List<String> missingParams = new ArrayList<>();
 
-        // Set the file name (or URL) in the RentalEntity
-        newRental.setPicture(fileName);
-        newRental.setName(rentalEntity.getName());
-        newRental.setDescription(rentalEntity.getDescription());
-        newRental.setOwner(rentalEntity.getOwner());
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            if (entry.getValue() == null || (entry.getValue() instanceof String && ((String) entry.getValue()).isEmpty())) {
+                missingParams.add(entry.getKey());
+            }
+        }
 
-        // Now save the entity to the database
-        rentalRepository.save(newRental);
+        if (!missingParams.isEmpty()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Missing or invalid parameters: " + String.join(", ", missingParams));
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>("Rental created with file: " + fileName, HttpStatus.OK);
+        Optional<UserEntity> user = userRepository.findByEmail(principal.getName());
+
+        if (picture != null && user.isPresent()) {
+            String fileName = picture.getOriginalFilename();
+            Path filePath = Paths.get(this.assetsPath, fileName);
+            Files.write(filePath, picture.getBytes());
+
+            RentalEntity newRental = new RentalEntity();
+
+            newRental
+                    .setPicture(this.getPath + fileName)
+                    .setName(name)
+                    .setDescription(description)
+                    .setOwner(user.get())
+                    .setPrice(price)
+                    .setSurface(surface);
+            rentalRepository.save(newRental);
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Rental successfully created");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 }
