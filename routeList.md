@@ -1,39 +1,46 @@
 # Routes to set
 
-- Register
+## Auth
+
+[x] - Register
 > route: ``/auth/register``
 > method: POST
 > body: {name, email, password}
 
-- Login
+[x] - Login
 > route: ``/auth/login``
 > method: POST
 > body: {email, password}
 
-- Messages
+## Messages
+
+[x] - Add
 > route: ``/messages``
 > method: POST
 > body: {message}
 
-- Rentals
-Browse
+## Rentals
+
+[x] - Browse
 > route: ``/rentals``
 > method: GET
 
-Read
+[x] - Read
 > route: ``/rental/:id``
 > method: GET
 
-Add
+[x] - Add
 > route: ``/rentals``
 > method: POST
 > body: {...rentalParams}
 
-Edit
+[ ] - Edit
 > route: ``/rentals/:id``
 > method: PUT
 > body: {...editedRentalParams}
 
-- User
+## User
+
+[x] - Read
 > route: ``/users/:id``
 > method: GET

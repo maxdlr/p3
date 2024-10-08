@@ -1,8 +1,8 @@
 package Api;
 
-import Model.User;
+import Model.UserEntity;
 import Persistence.UserRepository;
-import Services.ApiResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,21 +20,26 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<User>> list(){
-
+    public ResponseEntity<Iterable<UserEntity>> list(){
         return ResponseEntity.status(200).body(userRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> get(@PathVariable int id){
-        Optional<User> user = userRepository.findById(id);
+    public ResponseEntity<UserEntity> get(@PathVariable int id){
+        Optional<UserEntity> user = userRepository.findById(id);
         return user.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ApiResponse create(@Validated @RequestBody User user){
-        User newUser = userRepository.save(user);
-        Object data = ResponseEntity.ok().body(newUser);
-        return new ApiResponse("User successfully created", data);
+    public ResponseEntity<UserEntity> create(@Validated @RequestBody UserEntity user){
+        UserEntity newUser = userRepository.save(user);
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    }
+
+    //todo: remove
+    @GetMapping("/prune")
+    public ResponseEntity<String> deleteAll(){
+        userRepository.deleteAll();
+        return new ResponseEntity<>("All deleted", HttpStatus.OK);
     }
 }
