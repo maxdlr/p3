@@ -24,15 +24,15 @@
 > route: ``/rental/:id``
 > method: GET 
 
-[x] - Add 
-> route: ``/rentals``
-> method: POST
-> body: {...rentalParams} 
-
 [x] - Edit 
 > route: ``/rentals/:id``
 > method: PUT
 > body: {...editedRentalParams} 
+
+[x] - Add 
+> route: ``/rentals``
+> method: POST
+> body: {...rentalParams}
 
 ## User 
 [x] - Read 
