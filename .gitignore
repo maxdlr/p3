@@ -46,3 +46,4 @@ secrets.yml
 node_modules
 front/node_modules
 shared/assets/**
+*.zip
