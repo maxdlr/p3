@@ -1,5 +1,7 @@
 # Routes to set
 
+## Auth
+
 [x] - Register
 > route: ``/auth/register``
 > method: POST
@@ -10,13 +12,16 @@
 > method: POST
 > body: {email, password}
 
-[x] - Messages
+## Messages
+
+[x] - Add
 > route: ``/messages``
 > method: POST
 > body: {message}
 
-[x] - Rentals
-Browse
+## Rentals
+
+[x] - Browse
 > route: ``/rentals``
 > method: GET
 
@@ -34,6 +39,8 @@ Browse
 > method: PUT
 > body: {...editedRentalParams}
 
-[x] - User
+## User
+
+[x] - Read
 > route: ``/users/:id``
 > method: GET
