@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -101,5 +102,36 @@ public class RentalController {
         response.put("message", "Rental successfully created");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping(path ="/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> update(
+            @PathVariable("id") int id,
+            @RequestParam("name") String name,
+            @RequestParam("surface") float surface,
+            @RequestParam("price") float price,
+            @RequestParam("description") String description
+    ) {
+        String message = "Rental successfully updated";
+        HttpStatus status = HttpStatus.OK;
+        try {
+            Optional<RentalEntity> rental = rentalRepository.findById(id);
+            if (rental.isPresent()) {
+            rental
+                    .get()
+                    .setName(name)
+                    .setSurface(surface)
+                    .setPrice(price)
+                    .setDescription(description);
+            rentalRepository.save(rental.get());
+            }
+        } catch (Exception e) {
+            message = e.getMessage();
+            status = HttpStatus.BAD_REQUEST;
+        }
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", message);
+        return new ResponseEntity<>(response, status);
     }
 }
