@@ -31,7 +31,6 @@ public class FileController {
         }
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
                 .body(resource);
     }
 }
