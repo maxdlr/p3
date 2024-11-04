@@ -35,11 +35,4 @@ public class UserController {
         UserEntity newUser = userRepository.save(user);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
-
-    //todo: remove
-    @GetMapping("/prune")
-    public ResponseEntity<String> deleteAll(){
-        userRepository.deleteAll();
-        return new ResponseEntity<>("All deleted", HttpStatus.OK);
-    }
 }
