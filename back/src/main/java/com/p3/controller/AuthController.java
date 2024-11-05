@@ -50,8 +50,6 @@ public class AuthController {
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginDto loginDto) {
 
-        createDefaultUser();
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -86,19 +84,5 @@ public class AuthController {
         String token = jwtAuthenticationFilter.getJwtFromRequest(request);
         String email = jwtGenerator.getEmailFromToken(token);
         return new ResponseEntity<>(userRepository.findByEmail(email).get(), HttpStatus.OK);
-    }
-
-    private void createDefaultUser() {
-        String email = "contact@maxdlr.com";
-        if (userRepository.existsByEmail(email)) return;
-
-        RoleEntity role = roleRepository.findByName("USER").isPresent() ? roleRepository.findByName("USER").get() : null;
-        UserEntity defaultUser = new UserEntity();
-        defaultUser
-                .setName("Maxime")
-                .setPassword(passwordEncoder.encode("azerty"))
-                .setRoles(Collections.singletonList(role))
-                .setEmail(email);
-        userRepository.save(defaultUser);
     }
 }
