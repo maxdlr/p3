@@ -1,5 +1,7 @@
 package com.p3.controller;
 
+import com.p3.dto.api.AddApiResponse;
+import com.p3.dto.api.ErrorApiResponse;
 import com.p3.model.MessageEntity;
 import com.p3.model.RentalEntity;
 import com.p3.model.UserEntity;
@@ -12,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -29,16 +30,14 @@ public class MessageController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Map<String, String>> createMessage(
+    ResponseEntity<Object> create(
             @RequestBody HashMap<String, String> message
     ) {
         Optional<UserEntity> user = userRepository.findById(Integer.parseInt(message.get("user_id")));
         Optional<RentalEntity> rental = rentalRepository.findById(Integer.parseInt(message.get("rental_id")));
 
         if (user.isEmpty() || rental.isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "User or Rental is missing");
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            return new ErrorApiResponse("User or Rental is missing", HttpStatus.BAD_REQUEST).get();
         }
 
         try {
@@ -50,14 +49,9 @@ public class MessageController {
 
             messageRepository.save(newMessage);
 
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Message sent");
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new AddApiResponse("Message sent").get();
         } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+            return new ErrorApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST).get();
         }
     }
 }
