@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ROLES")
-public class RoleEntity {
+public class RoleEntity extends ModelEntity {
     @Id
     @GeneratedValue
     private int id;

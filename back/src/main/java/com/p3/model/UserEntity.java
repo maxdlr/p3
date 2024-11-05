@@ -8,15 +8,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "USERS")
-public class UserEntity {
+public class UserEntity extends ModelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String email;
     private String name;
     private String password;
-    private Date createdAt;
-    private Date updatedAt;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.DETACH,
@@ -33,14 +31,6 @@ public class UserEntity {
 
     public UserEntity() {
         this.createdAt = new Date();
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
     }
 
     public void setUpdatedAt(Date updatedAt) {

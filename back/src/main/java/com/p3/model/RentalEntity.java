@@ -1,12 +1,13 @@
 package com.p3.model;
 
+import ch.qos.logback.core.model.Model;
 import jakarta.persistence.*;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "RENTALS")
-public class RentalEntity {
+public class RentalEntity extends ModelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -16,10 +17,6 @@ public class RentalEntity {
     private float surface;
 
     private float price;
-
-    private Date createdAt;
-
-    private Date updatedAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity owner;
@@ -89,14 +86,6 @@ public class RentalEntity {
     public RentalEntity setPrice(float price) {
         this.price = price;
         return this;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
     }
 
     public RentalEntity setUpdatedAt(Date updatedAt) {

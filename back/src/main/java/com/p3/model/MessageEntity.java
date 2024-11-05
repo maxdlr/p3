@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "MESSAGES")
-public class MessageEntity {
+public class MessageEntity extends ModelEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -18,9 +18,6 @@ public class MessageEntity {
     private UserEntity user;
 
     private String message;
-
-    private Date createdAt;
-    private Date updatedAt;
 
     public MessageEntity() {
         this.createdAt = new Date();
@@ -55,14 +52,6 @@ public class MessageEntity {
     public MessageEntity setMessage(String message) {
         this.message = message;
         return this;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
     }
 
     public MessageEntity setUpdatedAt(Date updatedAt) {

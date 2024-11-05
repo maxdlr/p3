@@ -1,5 +1,6 @@
 package com.p3.controller;
 
+import com.p3.dto.api.*;
 import com.p3.model.RentalEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.RentalRepository;
@@ -36,20 +37,19 @@ public class RentalController {
     }
 
     @GetMapping
-    public ResponseEntity<HashMap<String, Iterable<RentalEntity>>> list(){
-        HashMap<String, Iterable<RentalEntity>> response = new HashMap<>();
-        response.put("rentals", rentalRepository.findAll());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Object> list() {
+      return new BrowseApiResponse<>("rentals", rentalRepository.findAll()).get();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RentalEntity> getRentalById(@PathVariable("id") int id){
-        Optional<RentalEntity> rental = rentalRepository.findById(id);
-        return rental.map(rentalEntity -> new ResponseEntity<>(rentalEntity, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Object> getRentalById(@PathVariable("id") int id) {
+        return rentalRepository.findById(id)
+                .map(rentalEntity -> new ReadApiResponse<>(rentalEntity).get())
+                .orElseGet(() -> new ErrorApiResponse("Rental not found", HttpStatus.NOT_FOUND).get());
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> create(
+    public ResponseEntity<Object> create(
             final Principal principal,
             @RequestParam("name") String name,
             @RequestParam("surface") float surface,
@@ -73,9 +73,11 @@ public class RentalController {
         }
 
         if (!missingParams.isEmpty()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Missing or invalid parameters: " + String.join(", ", missingParams));
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
+            return new ErrorApiResponse(
+                    "Missing or invalid parameters: " + String.join(", ", missingParams),
+                    HttpStatus.BAD_REQUEST)
+                    .get();
         }
 
         Optional<UserEntity> user = userRepository.findByEmail(principal.getName());
@@ -97,22 +99,17 @@ public class RentalController {
             rentalRepository.save(newRental);
         }
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Rental successfully created");
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new AddApiResponse("Rental successfully created").get();
     }
 
     @PutMapping(path ="/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> update(
+    public ResponseEntity<Object> update(
             @PathVariable("id") int id,
             @RequestParam("name") String name,
             @RequestParam("surface") float surface,
             @RequestParam("price") float price,
             @RequestParam("description") String description
     ) {
-        String message = "Rental successfully updated";
-        HttpStatus status = HttpStatus.OK;
         try {
             Optional<RentalEntity> rental = rentalRepository.findById(id);
             if (rental.isPresent()) {
@@ -125,12 +122,9 @@ public class RentalController {
             rentalRepository.save(rental.get());
             }
         } catch (Exception e) {
-            message = e.getMessage();
-            status = HttpStatus.BAD_REQUEST;
+            return new ErrorApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST).get();
         }
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", message);
-        return new ResponseEntity<>(response, status);
+        return new EditApiResponse("Rental successfully updated").get();
     }
 }
