@@ -1,0 +1,21 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="p3" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ALTERNATIVE_JRE_PATH" value="/usr/java/jdk-23-oracle-x64" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="ASSETS_PATH" value="$PROJECT_DIR$/../shared/assets/" />
+      <env name="DB_SCHEMA_SQL_PATH" value="$PROJECT_DIR$/src/main/resources/schema.sql" />
+      <env name="DB_DATA_SQL_PATH" value="$PROJECT_DIR$/src/main/resources/data.sql" />
+      <env name="ASSETS_URL" value="http://localhost:9090/api/files/file/" />
+      <env name="DB_NAME" value="p3" />
+      <env name="DB_PASSWORD" value="root" />
+      <env name="DB_PORT" value="3307" />
+      <env name="DB_USERNAME" value="root" />
+    </envs>
+    <module name="p3.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.p3.P3Application" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

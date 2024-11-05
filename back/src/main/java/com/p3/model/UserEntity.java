@@ -30,7 +30,6 @@ public class UserEntity extends ModelEntity {
     private List<RoleEntity> roles = new ArrayList<>();
 
     public UserEntity() {
-        this.createdAt = new Date();
     }
 
     public void setUpdatedAt(Date updatedAt) {
