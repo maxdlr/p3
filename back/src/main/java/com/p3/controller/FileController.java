@@ -1,5 +1,6 @@
 package com.p3.controller;
 
+import com.p3.exception.ApiResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -26,10 +27,9 @@ public class FileController {
         Resource resource = new UrlResource(filePath.toUri());
 
         if (!resource.exists()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            throw new ApiResourceNotFoundException("File not found");
         }
 
-        return ResponseEntity.ok()
-                .body(resource);
+        return ResponseEntity.ok().body(resource);
     }
 }

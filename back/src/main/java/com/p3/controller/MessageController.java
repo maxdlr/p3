@@ -1,14 +1,13 @@
 package com.p3.controller;
 
 import com.p3.dto.api.AddApiResponse;
-import com.p3.dto.api.ErrorApiResponse;
+import com.p3.exception.ApiBadPostRequestException;
 import com.p3.model.MessageEntity;
 import com.p3.model.RentalEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.MessageRepository;
 import com.p3.persistence.RentalRepository;
 import com.p3.persistence.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class MessageController {
         Optional<RentalEntity> rental = rentalRepository.findById(Integer.parseInt(message.get("rental_id")));
 
         if (user.isEmpty() || rental.isEmpty()) {
-            return new ErrorApiResponse("User or Rental is missing", HttpStatus.BAD_REQUEST).get();
+            throw new ApiBadPostRequestException("User or Rental is missing");
         }
 
         try {
@@ -51,7 +50,7 @@ public class MessageController {
 
             return new AddApiResponse("Message sent").get();
         } catch (Exception e) {
-            return new ErrorApiResponse(e.getMessage(), HttpStatus.BAD_REQUEST).get();
+            throw new ApiBadPostRequestException(e.getMessage());
         }
     }
 }

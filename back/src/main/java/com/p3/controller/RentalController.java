@@ -1,6 +1,7 @@
 package com.p3.controller;
 
 import com.p3.dto.api.*;
+import com.p3.exception.ApiResourceNotFoundException;
 import com.p3.model.RentalEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.RentalRepository;
@@ -45,7 +46,7 @@ public class RentalController {
     public ResponseEntity<Object> getRentalById(@PathVariable("id") int id) {
         return rentalRepository.findById(id)
                 .map(rentalEntity -> new ReadApiResponse<>(rentalEntity).get())
-                .orElseGet(() -> new ErrorApiResponse("Rental not found", HttpStatus.NOT_FOUND).get());
+                .orElseThrow(() -> new ApiResourceNotFoundException("Rental not found"));
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,11 +74,7 @@ public class RentalController {
         }
 
         if (!missingParams.isEmpty()) {
-
-            return new ErrorApiResponse(
-                    "Missing or invalid parameters: " + String.join(", ", missingParams),
-                    HttpStatus.BAD_REQUEST)
-                    .get();
+            throw new ApiResourceNotFoundException("Missing or invalid parameters: " + String.join(", ", missingParams));
         }
 
         Optional<UserEntity> user = userRepository.findByEmail(principal.getName());

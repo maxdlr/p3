@@ -4,6 +4,7 @@ import com.p3.dto.api.AddApiResponse;
 import com.p3.dto.api.BrowseApiResponse;
 import com.p3.dto.api.ErrorApiResponse;
 import com.p3.dto.api.ReadApiResponse;
+import com.p3.exception.ApiResourceNotFoundException;
 import com.p3.model.UserEntity;
 import com.p3.persistence.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class UserController {
     public ResponseEntity<Object> get(@PathVariable int id){
         return userRepository.findById(id)
                 .map(user -> new ReadApiResponse<>(user).get())
-                .orElseGet(() -> new ErrorApiResponse("This user doesn't exist.", HttpStatus.BAD_REQUEST).get());
+                .orElseThrow(() -> new ApiResourceNotFoundException("This user doesn't exist."));
     }
 
     @PostMapping

@@ -3,6 +3,7 @@ package com.p3.controller;
 import com.p3.dto.AuthResponseDto;
 import com.p3.dto.LoginDto;
 import com.p3.dto.RegisterDto;
+import com.p3.exception.ApiBadPostRequestException;
 import com.p3.model.RoleEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.RoleRepository;
@@ -50,6 +51,10 @@ public class AuthController {
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthResponseDto> loginUser(@RequestBody LoginDto loginDto) {
 
+        if (!userRepository.existsByEmail(loginDto.getEmail())) {
+            throw new ApiBadPostRequestException("This email address does not exist");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getEmail(),
@@ -64,7 +69,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByEmail(registerDto.getEmail())) {
-            return new ResponseEntity<>("email is taken", HttpStatus.BAD_REQUEST);
+            throw new ApiBadPostRequestException("email is taken");
         }
         UserEntity user = new UserEntity();
         user.setEmail(registerDto.getEmail());
