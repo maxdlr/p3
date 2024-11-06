@@ -1,47 +1,17 @@
-create or replace database p3;
+drop database if exists p3;
+create database p3;
 use p3;
 
-create or replace table messages_seq
-(
-    next_not_cached_value bigint(21)          not null,
-    minimum_value         bigint(21)          not null,
-    maximum_value         bigint(21)          not null,
-    start_value           bigint(21)          not null comment 'start value when sequences is created or value if RESTART is used',
-    increment             bigint(21)          not null comment 'increment value',
-    cache_size            bigint(21) unsigned not null,
-    cycle_option          tinyint(1) unsigned not null comment '0 if no cycles are allowed, 1 if the sequence should begin a new cycle when maximum_value is passed',
-    cycle_count           bigint(21)          not null comment 'How many cycles have been done'
-);
-
-create or replace table rentals_seq
-(
-    next_not_cached_value bigint(21)          not null,
-    minimum_value         bigint(21)          not null,
-    maximum_value         bigint(21)          not null,
-    start_value           bigint(21)          not null comment 'start value when sequences is created or value if RESTART is used',
-    increment             bigint(21)          not null comment 'increment value',
-    cache_size            bigint(21) unsigned not null,
-    cycle_option          tinyint(1) unsigned not null comment '0 if no cycles are allowed, 1 if the sequence should begin a new cycle when maximum_value is passed',
-    cycle_count           bigint(21)          not null comment 'How many cycles have been done'
-);
+CREATE SEQUENCE messages_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE rentals_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE roles_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE users_seq START WITH 1 INCREMENT BY 1;
 
 create or replace table roles
 (
     id   int          not null
         primary key,
     name varchar(255) null
-);
-
-create or replace table roles_seq
-(
-    next_not_cached_value bigint(21)          not null,
-    minimum_value         bigint(21)          not null,
-    maximum_value         bigint(21)          not null,
-    start_value           bigint(21)          not null comment 'start value when sequences is created or value if RESTART is used',
-    increment             bigint(21)          not null comment 'increment value',
-    cache_size            bigint(21) unsigned not null,
-    cycle_option          tinyint(1) unsigned not null comment '0 if no cycles are allowed, 1 if the sequence should begin a new cycle when maximum_value is passed',
-    cycle_count           bigint(21)          not null comment 'How many cycles have been done'
 );
 
 create or replace table users
@@ -96,18 +66,6 @@ create or replace table users_roles
         foreign key (user_id) references users (id),
     constraint FKj6m8fwv7oqv74fcehir1a9ffy
         foreign key (role_id) references roles (id)
-);
-
-create or replace table users_seq
-(
-    next_not_cached_value bigint(21)          not null,
-    minimum_value         bigint(21)          not null,
-    maximum_value         bigint(21)          not null,
-    start_value           bigint(21)          not null comment 'start value when sequences is created or value if RESTART is used',
-    increment             bigint(21)          not null comment 'increment value',
-    cache_size            bigint(21) unsigned not null,
-    cycle_option          tinyint(1) unsigned not null comment '0 if no cycles are allowed, 1 if the sequence should begin a new cycle when maximum_value is passed',
-    cycle_count           bigint(21)          not null comment 'How many cycles have been done'
 );
 
 
