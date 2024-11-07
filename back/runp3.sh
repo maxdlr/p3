@@ -37,7 +37,9 @@ echo "Did you run schema.sql and data.sql script in $(pwd)/src/main/resources/ ?
 read -r user_input_sql_scripts
 
 if [[ "$user_input_sql_scripts" != "y" && "$user_input_sql_scripts" != "Y" && "$user_input_sql_scripts" != "" ]]; then
-  echo "Please execute the following commands in your db '$DB_NAME' and run the script again."
+  echo "Please execute the following sql scripts in your db '$DB_NAME' and run the script again."
+  echo "Create schema: $(pwd)/src/main/resources/schema.sql"
+  echo "Insert data: $(pwd)/src/main/resources/data.sql"
   exit 1
 fi
 
