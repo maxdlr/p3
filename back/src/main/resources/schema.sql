@@ -1,20 +1,22 @@
-drop database if exists p3;
-create database p3;
-use p3;
+CREATE OR REPLACE SEQUENCE messages_seq START WITH 1 INCREMENT BY 1;
+CREATE OR REPLACE SEQUENCE rentals_seq START WITH 1 INCREMENT BY 1;
+CREATE OR REPLACE SEQUENCE roles_seq START WITH 1 INCREMENT BY 1;
+CREATE OR REPLACE SEQUENCE users_seq START WITH 1 INCREMENT BY 1;
 
-CREATE SEQUENCE messages_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE rentals_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE roles_seq START WITH 1 INCREMENT BY 1;
-CREATE SEQUENCE users_seq START WITH 1 INCREMENT BY 1;
+drop table if exists roles;
+drop table if exists users_roles;
+drop table if exists messages;
+drop table if exists rentals;
+drop table if exists users;
 
-create or replace table roles
+create table roles
 (
     id   int          not null
         primary key,
     name varchar(255) null
 );
 
-create or replace table users
+create table users
 (
     created_at datetime(6)  null,
     id         bigint       not null
@@ -25,7 +27,17 @@ create or replace table users
     password   varchar(255) null
 );
 
-create or replace table rentals
+create table users_roles
+(
+    role_id int    not null,
+    user_id bigint not null,
+    constraint FK2o0jvgh89lemvvo17cbqvdxaa
+        foreign key (user_id) references users (id),
+    constraint FKj6m8fwv7oqv74fcehir1a9ffy
+        foreign key (role_id) references roles (id)
+);
+
+create table rentals
 (
     id          int           not null
         primary key,
@@ -41,7 +53,7 @@ create or replace table rentals
         foreign key (owner_id) references users (id)
 );
 
-create or replace table messages
+create table messages
 (
     id         int          not null
         primary key,
@@ -56,16 +68,6 @@ create or replace table messages
         foreign key (rental_id) references rentals (id),
     constraint FKpsmh6clh3csorw43eaodlqvkn
         foreign key (user_id) references users (id)
-);
-
-create or replace table users_roles
-(
-    role_id int    not null,
-    user_id bigint not null,
-    constraint FK2o0jvgh89lemvvo17cbqvdxaa
-        foreign key (user_id) references users (id),
-    constraint FKj6m8fwv7oqv74fcehir1a9ffy
-        foreign key (role_id) references roles (id)
 );
 
 
