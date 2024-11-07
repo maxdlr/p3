@@ -1,46 +1,42 @@
-# Routes to set
+> Repo: https://github.com/maxdlr/p3
 
-## Auth
+# Routes to set 
 
-[x] - Register
-> route: ``/auth/register``
+## Auth 
+[x] - Register 
+> route: ``/auth/register`` 
 > method: POST
-> body: {name, email, password}
+> body: {name, email, password} 
 
 [x] - Login
 > route: ``/auth/login``
-> method: POST
-> body: {email, password}
+> method: POST > body: {email, password} 
 
-## Messages
-
-[x] - Add
+## Messages 
+[x] - Add 
 > route: ``/messages``
-> method: POST
-> body: {message}
+> method: POST > body: {message} 
 
-## Rentals
-
-[x] - Browse
+## Rentals 
+[x] - Browse 
 > route: ``/rentals``
-> method: GET
+> method: GET 
 
-[x] - Read
+[x] - Read 
 > route: ``/rental/:id``
-> method: GET
+> method: GET 
 
-[x] - Add
+[x] - Edit 
+> route: ``/rentals/:id``
+> method: PUT
+> body: {...editedRentalParams} 
+
+[x] - Add 
 > route: ``/rentals``
 > method: POST
 > body: {...rentalParams}
 
-[ ] - Edit
-> route: ``/rentals/:id``
-> method: PUT
-> body: {...editedRentalParams}
-
-## User
-
-[x] - Read
+## User 
+[x] - Read 
 > route: ``/users/:id``
 > method: GET

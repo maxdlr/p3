@@ -13,7 +13,6 @@ export class JwtInterceptor implements HttpInterceptor {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(request)
     }
     return next.handle(request);
   }
