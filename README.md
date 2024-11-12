@@ -5,6 +5,12 @@
 > From repo directory
 
 Just follow the prompts of the following command.
+
 ```bash
 cd back && ./runp3.sh
+```
+Login with
+```bash
+test@test.com
+test123
 ```
