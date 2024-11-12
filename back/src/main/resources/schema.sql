@@ -3,8 +3,8 @@ CREATE OR REPLACE SEQUENCE rentals_seq START WITH 1 INCREMENT BY 1;
 CREATE OR REPLACE SEQUENCE roles_seq START WITH 1 INCREMENT BY 1;
 CREATE OR REPLACE SEQUENCE users_seq START WITH 1 INCREMENT BY 1;
 
-drop table if exists roles;
 drop table if exists users_roles;
+drop table if exists roles;
 drop table if exists messages;
 drop table if exists rentals;
 drop table if exists users;
