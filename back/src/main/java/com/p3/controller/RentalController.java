@@ -44,6 +44,9 @@ public class RentalController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getRentalById(@PathVariable("id") int id) {
+
+        System.out.println(rentalRepository.findById(id).get().getName());
+
         return rentalRepository.findById(id)
                 .map(rentalEntity -> new ReadApiResponse<>(rentalEntity).get())
                 .orElseThrow(() -> new ApiResourceNotFoundException("Rental not found"));

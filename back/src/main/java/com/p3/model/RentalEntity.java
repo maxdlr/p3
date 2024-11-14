@@ -1,8 +1,6 @@
 package com.p3.model;
 
-import ch.qos.logback.core.model.Model;
 import jakarta.persistence.*;
-
 import java.util.Date;
 
 @Entity
@@ -25,10 +23,6 @@ public class RentalEntity extends ModelEntity {
 
     @Column(length = 2000)
     private String description;
-
-    public RentalEntity() {
-        this.createdAt = new Date();
-    }
 
     public int getId() {
         return id;
@@ -85,11 +79,6 @@ public class RentalEntity extends ModelEntity {
 
     public RentalEntity setPrice(float price) {
         this.price = price;
-        return this;
-    }
-
-    public RentalEntity setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
         return this;
     }
 }

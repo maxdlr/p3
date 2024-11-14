@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 abstract public class ApiResponse {
 
-    protected HashMap<String, Object> response = new HashMap<>();
+    protected Object response = new HashMap<>();
     protected HttpStatus status;
 
     public ResponseEntity<Object> get() {

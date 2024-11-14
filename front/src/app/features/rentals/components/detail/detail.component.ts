@@ -34,7 +34,11 @@ export class DetailComponent implements OnInit {
 
     this.rentalsService
       .detail(id)
-      .subscribe((rental: Rental) => this.rental = rental);
+      .subscribe((rental: Rental) => {
+        this.rental = rental
+        this.rental.createdAt = new Date(rental.createdAt);
+        this.rental.updatedAt = new Date(rental.updatedAt);
+      });
   }
 
   public back() {

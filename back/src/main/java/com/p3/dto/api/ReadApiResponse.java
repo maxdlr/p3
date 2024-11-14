@@ -8,5 +8,6 @@ public class ReadApiResponse<T extends ModelEntity> extends ApiResponse {
             T data
     ) {
         this.status = HttpStatus.OK;
+        this.response = data;
     }
 }

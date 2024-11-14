@@ -28,7 +28,7 @@ public class MessageController {
         this.messageRepository = messageRepository;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping()
     ResponseEntity<Object> create(
             @RequestBody HashMap<String, String> message
     ) {

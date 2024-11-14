@@ -32,10 +32,6 @@ public class UserEntity extends ModelEntity {
     public UserEntity() {
     }
 
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public long getId() {
         return id;
     }
