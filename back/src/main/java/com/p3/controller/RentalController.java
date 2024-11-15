@@ -1,11 +1,11 @@
 package com.p3.controller;
 
-import com.p3.dto.api.*;
 import com.p3.exception.ApiResourceNotFoundException;
 import com.p3.model.RentalEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.RentalRepository;
 import com.p3.persistence.UserRepository;
+import com.p3.response.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

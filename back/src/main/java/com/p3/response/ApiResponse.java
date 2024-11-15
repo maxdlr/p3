@@ -1,4 +1,4 @@
-package com.p3.dto.api;
+package com.p3.response;
 
 
 import org.springframework.http.HttpStatus;

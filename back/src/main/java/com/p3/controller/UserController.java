@@ -1,13 +1,11 @@
 package com.p3.controller;
 
-import com.p3.dto.api.AddApiResponse;
-import com.p3.dto.api.BrowseApiResponse;
-import com.p3.dto.api.ErrorApiResponse;
-import com.p3.dto.api.ReadApiResponse;
+import com.p3.response.AddApiResponse;
+import com.p3.response.BrowseApiResponse;
+import com.p3.response.ReadApiResponse;
 import com.p3.exception.ApiResourceNotFoundException;
 import com.p3.model.UserEntity;
 import com.p3.persistence.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

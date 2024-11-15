@@ -1,6 +1,6 @@
 package com.p3.controller;
 
-import com.p3.dto.api.AddApiResponse;
+import com.p3.response.AddApiResponse;
 import com.p3.exception.ApiBadPostRequestException;
 import com.p3.model.MessageEntity;
 import com.p3.model.RentalEntity;
@@ -8,7 +8,6 @@ import com.p3.model.UserEntity;
 import com.p3.persistence.MessageRepository;
 import com.p3.persistence.RentalRepository;
 import com.p3.persistence.UserRepository;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

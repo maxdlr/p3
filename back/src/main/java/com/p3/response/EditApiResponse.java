@@ -1,15 +1,15 @@
-package com.p3.dto.api;
+package com.p3.response;
 
 import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 
-public class DeleteApiResponse extends ApiResponse {
-    public DeleteApiResponse(
+public class EditApiResponse extends ApiResponse {
+    public EditApiResponse(
             String message
     ) {
         HashMap<String, String> map = new HashMap<>();
-        map.put("message",message);
+        map.put("message", message);
 
         this.response = map;
         this.status = HttpStatus.OK;
