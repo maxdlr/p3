@@ -37,7 +37,9 @@ export class RegisterComponent {
           this.router.navigate(['/rentals'])
         });
       },
-      error => this.onError = true
+      error => {
+        this.onError = true
+      }
     );
   }
 
