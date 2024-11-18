@@ -1,4 +1,4 @@
-package com.p3.dto.api;
+package com.p3.response;
 
 import com.p3.model.ModelEntity;
 import org.springframework.http.HttpStatus;
@@ -8,5 +8,6 @@ public class ReadApiResponse<T extends ModelEntity> extends ApiResponse {
             T data
     ) {
         this.status = HttpStatus.OK;
+        this.response = data;
     }
 }

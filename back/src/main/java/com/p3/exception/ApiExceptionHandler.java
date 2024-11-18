@@ -1,6 +1,6 @@
 package com.p3.exception;
 
-import com.p3.dto.api.ErrorApiResponse;
+import com.p3.response.ErrorApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

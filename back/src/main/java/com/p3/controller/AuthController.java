@@ -4,10 +4,13 @@ import com.p3.dto.AuthResponseDto;
 import com.p3.dto.LoginDto;
 import com.p3.dto.RegisterDto;
 import com.p3.exception.ApiBadPostRequestException;
+import com.p3.exception.ApiResourceNotFoundException;
 import com.p3.model.RoleEntity;
 import com.p3.model.UserEntity;
 import com.p3.persistence.RoleRepository;
 import com.p3.persistence.UserRepository;
+import com.p3.response.ReadApiResponse;
+import com.p3.response.RegisterApiResponse;
 import com.p3.security.JwtAuthenticationFilter;
 import com.p3.security.JwtGenerator;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,7 +71,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<Object> registerUser(@RequestBody RegisterDto registerDto) {
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             throw new ApiBadPostRequestException("email is taken");
         }
@@ -82,7 +85,17 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return new ResponseEntity<>("User successfully registered", HttpStatus.OK);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getEmail(),
+                        user.getPassword()
+                )
+        );
+
+        return new RegisterApiResponse(
+                "User successfully registered",
+                jwtGenerator.generateToken(authentication)
+        ).get();
     }
 
     @GetMapping("/me")

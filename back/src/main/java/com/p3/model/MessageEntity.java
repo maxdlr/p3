@@ -14,14 +14,10 @@ public class MessageEntity extends ModelEntity{
     @ManyToOne(fetch = FetchType.EAGER)
     private RentalEntity rental;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity user;
 
     private String message;
-
-    public MessageEntity() {
-        this.createdAt = new Date();
-    }
 
     public int getId() {
         return id;
@@ -51,11 +47,6 @@ public class MessageEntity extends ModelEntity{
 
     public MessageEntity setMessage(String message) {
         this.message = message;
-        return this;
-    }
-
-    public MessageEntity setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
         return this;
     }
 }

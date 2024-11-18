@@ -4,7 +4,7 @@ CREATE TABLE if not exists `USERS` (
   `name` varchar(255),
   `password` varchar(255),
   `createdAt` timestamp,
-  `updated_at` timestamp
+  `updatedAt` timestamp
 );
 
 CREATE TABLE if not exists `RENTALS` (
@@ -16,7 +16,7 @@ CREATE TABLE if not exists `RENTALS` (
   `description` varchar(2000),
   `owner_id` integer NOT NULL,
   `createdAt` timestamp,
-  `updated_at` timestamp
+  `updatedAt` timestamp
 );
 
 CREATE TABLE if not exists `MESSAGES` (
@@ -25,7 +25,7 @@ CREATE TABLE if not exists `MESSAGES` (
   `user_id` integer,
   `message` varchar(2000),
   `createdAt` timestamp,
-  `updated_at` timestamp
+  `updatedAt` timestamp
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS `USERS_index` ON `USERS` (`email`);
